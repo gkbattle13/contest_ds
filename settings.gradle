@@ -2,6 +2,9 @@ pluginManagement {
 	repositories {
 		maven { url 'https://repo.spring.io/milestone' }
 		maven { url 'https://repo.spring.io/snapshot' }
+		maven { url 'https://maven.aliyun.com/repository/central'}
+		maven { url 'https://repository.cloudera.com/artifactory/cloudera-repos/' }
+		maven { url 'http://central.maven.org/maven2/' }
 		gradlePluginPortal()
 	}
 	resolutionStrategy {
@@ -13,3 +16,8 @@ pluginManagement {
 	}
 }
 rootProject.name = 'contest_ds'
+include 'ds_etl'
+include 'ds_pipe'
+include 'ds_web_back'
+include 'ds_web_front'
+
