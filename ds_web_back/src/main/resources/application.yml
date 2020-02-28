@@ -19,3 +19,11 @@ spring:
       ddl-auto: update
     database: mysql
     show-sql: true
+
+# Elasticsearch Config
+elasticsearch:
+  # host ip1,ip2,,,
+  host: {ES_HOST}
+  port: 9300
+  clusterName: elasticsearch
+  clientTransportSniff: false
