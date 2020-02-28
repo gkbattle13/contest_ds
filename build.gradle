@@ -32,12 +32,28 @@ subprojects {
 	}
 
 	dependencies {
-		runtime "mysql:mysql-connector-java:8.0.17"
-		runtime "com.alibaba:druid:1.1.20"
+		implementation "org.slf4j:slf4j-api:1.7.28"
 
-		implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-		implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
-
-		testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
+		testImplementation "org.junit.jupiter:junit-jupiter-engine:5.5.2"
+		testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.5.2"
+		testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
+			exclude group: 'junit', module: 'junit'
+		}
 	}
+
+	compileJava {
+		options.encoding = "UTF-8"
+		options.compilerArgs << "-Xlint:unchecked"
+	}
+
+	compileTestJava {
+		options.encoding = "UTF-8"
+		options.compilerArgs << "-Xlint:unchecked"
+	}
+
+	test {
+		useJUnitPlatform()
+	}
+
+	defaultTasks "assemble"
 }
