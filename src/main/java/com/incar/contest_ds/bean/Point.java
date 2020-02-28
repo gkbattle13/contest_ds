@@ -1,9 +1,9 @@
-package com.es.bean;
+package com.incar.contest_ds.bean;
 
 import java.text.DecimalFormat;
 
 /**
- * note
+ * Point
  *
  * @author Kong, created on 2020-02-28T14:56.
  * @since 1.0.0-SNAPSHOT
