@@ -1,59 +1,43 @@
-
-buildscript {
-	repositories {
-		maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-		maven { url 'https://repo.spring.io/milestone' }
-		maven { url 'https://repo.spring.io/snapshot' }
-		google()
-	}
-}
-
 plugins {
-	id "org.springframework.boot" version "2.2.5.RELEASE"
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-	id 'java'
+	id "java"
+	id "io.freefair.lombok" version "4.1.6" apply false //https://projectlombok.org/setup/gradle
+	id "org.springframework.boot" version "2.2.5.RELEASE" apply false
+	id "io.spring.dependency-management" version "1.0.9.RELEASE" apply false
 }
 
 allprojects {
+	group = "com.incar"
+	version = "0.1.0-SNAPSHOT"
+}
 
-	group = 'com.incar'
-	version = '0.0.1-SNAPSHOT'
+subprojects {
+	// https://docs.gradle.org/current/userguide/plugins.html
+	if (name.startsWith("ds_pipe") || name.startsWith("ds_web_back")) {
+		apply plugin: "java"
+		apply plugin: "io.freefair.lombok"
+		apply plugin: "org.springframework.boot"
+		apply plugin: "io.spring.dependency-management"
+	}
+
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+
+	ext {
+		springBootVersion = "2.2.5.RELEASE"
+	}
 
 	repositories {
-		maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-		google()
+		maven { url "https://maven.aliyun.com/repository/public" }
+		maven { url "https://repository.incarcloud.com/content/groups/public" }
 	}
 
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+	dependencies {
+		runtime "mysql:mysql-connector-java:8.0.17"
+		runtime "com.alibaba:druid:1.1.20"
 
-}
+		implementation "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
+		implementation "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
 
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+		testImplementation "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
 	}
-}
-
-repositories {
-    mavenCentral()
-    maven { url 'https://maven.aliyun.com/repository/central' }
-    maven { url 'https://repository.cloudera.com/artifactory/cloudera-repos/' }
-    maven { url 'http://central.maven.org/maven2/' }
-	maven { url 'https://repo.spring.io/milestone' }
-	maven { url 'https://repo.spring.io/snapshot' }
-
-}
-
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-
-	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
-	compile group: 'com.alibaba', name: 'druid', version: '1.1.20'
-
-	compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
