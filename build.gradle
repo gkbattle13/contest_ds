@@ -35,9 +35,7 @@ subprojects {
 		implementation "org.slf4j:slf4j-api:1.7.28"
 
 		testImplementation "junit:junit:4.12"
-		testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
-			exclude group: 'junit', module: 'junit'
-		}
+		testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
 	}
 
 	compileJava {
