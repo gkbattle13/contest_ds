@@ -34,9 +34,8 @@ subprojects {
 	dependencies {
 		implementation "org.slf4j:slf4j-api:1.7.28"
 
-		testImplementation "org.junit.jupiter:junit-jupiter-engine:5.5.2"
-		testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.5.2"
-		testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
+		testImplementation "junit:junit:4.12"
+		testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
 			exclude group: 'junit', module: 'junit'
 		}
 	}
@@ -49,10 +48,6 @@ subprojects {
 	compileTestJava {
 		options.encoding = "UTF-8"
 		options.compilerArgs << "-Xlint:unchecked"
-	}
-
-	test {
-		useJUnitPlatform()
 	}
 
 	defaultTasks "assemble"
