@@ -1,4 +1,4 @@
-package com.incar.contest_ds;
+package com.incar.contest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

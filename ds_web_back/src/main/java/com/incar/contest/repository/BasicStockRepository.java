@@ -1,6 +1,6 @@
-package com.incar.contest_ds.repository;
+package com.incar.contest.repository;
 
-import com.incar.contest_ds.bean.BasicStock;
+import com.incar.contest.bean.BasicStock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

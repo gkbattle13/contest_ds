@@ -1,4 +1,4 @@
-package com.incar.contest_ds.bean;
+package com.incar.contest.bean;
 
 import java.text.DecimalFormat;
 

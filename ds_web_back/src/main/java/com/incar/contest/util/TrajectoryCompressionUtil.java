@@ -1,7 +1,7 @@
-package com.incar.contest_ds.util;
+package com.incar.contest.util;
 
 
-import com.incar.contest_ds.bean.Point;
+import com.incar.contest.bean.Point;
 
 import java.util.ArrayList;
 import java.util.Collections;

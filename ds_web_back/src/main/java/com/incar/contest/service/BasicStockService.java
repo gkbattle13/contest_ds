@@ -1,7 +1,7 @@
-package com.incar.contest_ds.service;
+package com.incar.contest.service;
 
-import com.incar.contest_ds.bean.BasicStock;
-import com.incar.contest_ds.repository.BasicStockRepository;
+import com.incar.contest.bean.BasicStock;
+import com.incar.contest.repository.BasicStockRepository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

@@ -1,7 +1,7 @@
-package com.incar.contest_ds.controller;
+package com.incar.contest.controller;
 
-import com.incar.contest_ds.bean.BasicStock;
-import com.incar.contest_ds.service.BasicStockService;
+import com.incar.contest.bean.BasicStock;
+import com.incar.contest.service.BasicStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
