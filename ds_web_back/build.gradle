@@ -1,3 +1,5 @@
+apply plugin: "org.springframework.boot"
+
 dependencies {
     runtime "mysql:mysql-connector-java:8.0.17"
     runtime "com.alibaba:druid:1.1.20"

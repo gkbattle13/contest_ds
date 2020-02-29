@@ -1,28 +1,16 @@
-plugins {
-	id "java"
-	id "io.freefair.lombok" version "4.1.6" apply false //https://projectlombok.org/setup/gradle
-	id "org.springframework.boot" version "2.2.5.RELEASE" apply false
-	id "io.spring.dependency-management" version "1.0.9.RELEASE" apply false
-}
-
 allprojects {
 	group = "com.incar"
 	version = "0.1.0-SNAPSHOT"
 }
 
 subprojects {
-	// https://docs.gradle.org/current/userguide/plugins.html
-	if (name.startsWith("ds_pipe") || name.startsWith("ds_web_back")) {
-		apply plugin: "java"
-		apply plugin: "io.freefair.lombok"
-		apply plugin: "org.springframework.boot"
-		apply plugin: "io.spring.dependency-management"
-	}
+	apply plugin: "java"
 
 	sourceCompatibility = JavaVersion.VERSION_1_8
 	targetCompatibility = JavaVersion.VERSION_1_8
 
 	ext {
+		lombokVersion = "1.18.8"
 		springBootVersion = "2.2.5.RELEASE"
 	}
 
@@ -32,10 +20,25 @@ subprojects {
 	}
 
 	dependencies {
-		implementation "org.slf4j:slf4j-api:1.7.28"
+		compileOnly "org.projectlombok:lombok:${lombokVersion}"
+		annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-		testImplementation "junit:junit:4.12"
-		testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+		compile "org.slf4j:slf4j-api:1.7.28"
+		compile "org.springframework.boot:spring-boot-starter-logging:${springBootVersion}"
+
+		testCompile "junit:junit:4.12"
+		testCompile ("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+	}
+
+	buildscript {
+		repositories {
+			maven { url "https://plugins.gradle.org/m2/" }
+			maven { url "https://maven.aliyun.com/repository/public" }
+		}
+
+		dependencies {
+			classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+		}
 	}
 
 	compileJava {
@@ -46,6 +49,10 @@ subprojects {
 	compileTestJava {
 		options.encoding = "UTF-8"
 		options.compilerArgs << "-Xlint:unchecked"
+	}
+
+	test {
+		useJUnitPlatform()
 	}
 
 	defaultTasks "assemble"
