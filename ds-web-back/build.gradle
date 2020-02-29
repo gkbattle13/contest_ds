@@ -1,7 +1,6 @@
 apply plugin: "org.springframework.boot"
 
 dependencies {
-    runtime "mysql:mysql-connector-java:8.0.17"
     runtime "com.alibaba:druid:1.1.20"
 
     compile "com.alibaba:fastjson:1.2.+"
@@ -9,6 +8,5 @@ dependencies {
     compile "org.elasticsearch.client:transport:5.5.+"
 //    compile "org.springframework.boot:spring-boot-starter-log4j2:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
-    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-websocket:$springBootVersion"
 }

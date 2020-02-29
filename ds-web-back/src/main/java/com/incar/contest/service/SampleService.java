@@ -33,7 +33,6 @@ public class SampleService {
         try {
             total = elasticsearch.getTotal(Constant.SAMPLE_INDEX, Constant.SAMPLE_TYPE, null);
         } catch (Exception e) {
-            log.info("获取总条数失败：" + e.getMessage(), e);
             throw new RuntimeException("获取总条数失败");
         }
 

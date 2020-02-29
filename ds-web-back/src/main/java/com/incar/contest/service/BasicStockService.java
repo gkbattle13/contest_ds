@@ -1,11 +1,9 @@
 package com.incar.contest.service;
 
 import com.incar.contest.bean.BasicStock;
-import com.incar.contest.repository.BasicStockRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -19,11 +17,9 @@ import java.util.List;
 @Slf4j
 public class BasicStockService {
 
-    @Resource
-    private BasicStockRepository roleRepository;
 
     public List<BasicStock> findAll() {
-        return roleRepository.findAll();
+        return null;
     }
 
 }
