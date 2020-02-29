@@ -58,7 +58,7 @@
               "writer": {
                 "name": "elasticsearchwriter",
                 "parameter": {
-                  "endpoint": "http://112.124.3.139:9200",
+                  "endpoint": "http://127.0.0.1:9200",
                   "accessId": "xxx",
                   "accessKey": "xxx",
                   "index": "sample_v1",
