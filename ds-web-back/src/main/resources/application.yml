@@ -1,3 +1,4 @@
+# Tomcat Config
 server:
   port: 30000
   compression:
@@ -9,10 +10,10 @@ server:
     accept-count: 600
     max-threads: 800
 
-# Elasticsearch Config
+# ElasticSearch Config
 elasticsearch:
   # host ip1,ip2,,,
-  host: 112.124.3.139
-  port: 9300
+  host: ${ES_HOST:112.124.3.139}
+  port: ${ES_PORT:9300}
   clusterName: elasticsearch
   clientTransportSniff: false
