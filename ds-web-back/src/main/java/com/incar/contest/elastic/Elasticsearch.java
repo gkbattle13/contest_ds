@@ -10,7 +10,6 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortBuilder;
@@ -190,56 +189,6 @@ public class Elasticsearch {
      * @param index 索引
      * @param type  类型
      * @param map   键值对
-     * @param size  查询数据条数
-     * @param clazz 对象
-     * @param <T> 类型
-     * @return
-     */
-    public <T extends Object> List<T> getData(String index, String type, Map<String, Object> map, int size, Class<T> clazz) {
-        List<T> arr = new ArrayList<>();
-        try {
-            SortBuilder sortBuilder = SortBuilders.fieldSort("id").order(SortOrder.ASC);
-            BoolQueryBuilder qb = new BoolQueryBuilder();
-
-            if (null != map) {
-                Iterator<Map.Entry<String, Object>> entries = map.entrySet().iterator();
-                while(entries.hasNext()){
-                    Map.Entry<String, Object> entry = entries.next();
-                    qb.must(QueryBuilders.matchQuery(entry.getKey(), entry.getValue()));
-                }
-            }
-
-            // 查询条数
-            SearchRequestBuilder searchNum = esClient.prepareSearch(index)
-                    .setTypes(type).setQuery(qb);
-            SearchResponse srNum = searchNum.get();//得到查询结果
-            int total = (int) srNum.getHits().getTotalHits();
-            if (size > total) {
-                size = total;
-            }
-
-            SearchRequestBuilder search = esClient.prepareSearch(index)
-                    .setTypes(type).setQuery(qb).addSort(sortBuilder)
-                    .setFrom(0)
-                    .setSize(size);
-            SearchResponse sr = search.get();//得到查询结果
-            for(SearchHit hits:sr.getHits()){
-                String json = JSON.toJSONString(hits.getSource()) ;
-                T obj = JSON.parseObject(json, clazz);
-                arr.add(obj) ;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return arr;
-    }
-
-    /**
-     * 查询对象集合信息
-     * @param index 索引
-     * @param type  类型
-     * @param map   键值对
-     * @param size  查询数据条数
      * @param timeType  时间对象类型
      * @param startDate 起始时间
      * @param endDate   终止时间
@@ -247,7 +196,7 @@ public class Elasticsearch {
      * @param <T> 类型
      * @return
      */
-    public <T extends Object> List<T> getData(String index, String type, Map<String, Object> map, int size,
+    public <T extends Object> List<T> getData(String index, String type, Map<String, Object> map,
                                               String timeType, Date startDate, Date endDate, Class<T> clazz) {
         List<T> arr = new ArrayList<>();
         try {
@@ -273,14 +222,11 @@ public class Elasticsearch {
                     .setTypes(type).setQuery(qb);
             SearchResponse srNum = searchNum.get();//得到查询结果
             int total = (int) srNum.getHits().getTotalHits();
-            if (size > total) {
-                size = total;
-            }
 
             SearchRequestBuilder search = esClient.prepareSearch(index)
                     .setTypes(type).setQuery(qb).addSort(sortBuilder)
                     .setFrom(0)
-                    .setSize(size);
+                    .setSize(total);
             SearchResponse sr = search.get();//得到查询结果
             for(SearchHit hits:sr.getHits()){
                 String json = JSON.toJSONString(hits.getSource()) ;
