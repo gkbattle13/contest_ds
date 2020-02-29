@@ -5,6 +5,7 @@ import com.incar.contest.repository.BasicStockRepository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,5 +24,24 @@ public class BasicStockService {
 
     public List<BasicStock> findAll() {
         return roleRepository.findAll();
+    }
+
+    /**
+     * 统计数据总行数
+     * @return
+     */
+    public Long getCount() {
+        return null;
+    }
+
+    /**
+     * 查询指定车辆指定日期的行驶总里程
+     * @param vin
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public Double findTotalMileageByVin(String vin, Date startTime, Date endTime) {
+        return null;
     }
 }
