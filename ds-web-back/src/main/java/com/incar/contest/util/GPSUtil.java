@@ -1,6 +1,7 @@
 package com.incar.contest.util;
 
 import com.incar.contest.bean.GPS;
+import com.incar.contest.bean.Point;
 
 /**
  * 各地图API坐标系统比较与转换;
@@ -81,6 +82,31 @@ public class GPSUtil {
         double mgLat = lat + dLat;
         double mgLon = lon + dLon;
         return new GPS(mgLat, mgLon);
+    }
+
+    /**
+     * 84 to 火星坐标系 (GCJ-02) World Geodetic System ==> Mars Geodetic System
+     *
+     */
+    public static Point gps84_To_Gcj02_03(Point point) {
+        if (outOfChina(point.getLatitude(), point.getLongitude())) {
+            return point;
+        }
+        double lon = point.getLongitude();
+        double lat = point.getLatitude();
+        double dLat = transformLat(lon - 105.0, lat - 35.0);
+        double dLon = transformLon(lon - 105.0, lat - 35.0);
+        double radLat = lat / 180.0 * pi;
+        double magic = Math.sin(radLat);
+        magic = 1 - ee * magic * magic;
+        double sqrtMagic = Math.sqrt(magic);
+        dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * pi);
+        dLon = (dLon * 180.0) / (a / sqrtMagic * Math.cos(radLat) * pi);
+        double mgLat = lat + dLat;
+        double mgLon = lon + dLon;
+        point.setLongitude(mgLon);
+        point.setLatitude(mgLat);
+        return point;
     }
 
     /**
