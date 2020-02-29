@@ -10,8 +10,9 @@ server:
     max-threads: 800
 
 spring:
+  profiles.active: dev
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/stock
+    url: jdbc:mysql://localhost:3306/stock?characterEncoding=utf8&useSSL=false&rewriteBatchedStatements=true&serverTimezone=GMT%2B8
     username: root
     password: rootroot
   jpa:
@@ -19,6 +20,7 @@ spring:
       ddl-auto: update
     database: mysql
     show-sql: true
+
 
 # Elasticsearch Config
 elasticsearch:
