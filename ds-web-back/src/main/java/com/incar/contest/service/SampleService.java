@@ -1,12 +1,16 @@
 package com.incar.contest.service;
 
+import com.incar.contest.bean.Points;
+import com.incar.contest.bean.Sample;
 import com.incar.contest.elastic.Elasticsearch;
 import com.incar.contest.share.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by bzheng on 2020/2/29.
@@ -41,9 +45,34 @@ public class SampleService {
      * @param endTime
      * @return
      */
-    public Double findTotalMileageByVin(String deviceCode, Date startTime, Date endTime) {
-//        elasticsearch.getData();
-        //INCAR10001033372
-        return 100.45;
+    public Double getTotalMileage(String deviceCode, Date startTime, Date endTime) {
+        Double total = 0D;
+        Map<String, Object> map = new HashMap<>();
+        map.put("deviceCode", deviceCode);
+        String timeType = "collectTime";
+        List<Sample> data = elasticsearch.getData(Constant.SAMPLE_INDEX, Constant.SAMPLE_TYPE, map, timeType, startTime, endTime, Sample.class);
+        if (!CollectionUtils.isEmpty(data)) {
+            total = data.stream().filter(sample -> Objects.nonNull(sample) && Objects.nonNull(sample.getDistance())).mapToDouble(Sample::getDistance).sum();
+        }
+        return total;
+    }
+
+    public List<Points> queryTrack(String deviceCode, Date startTime, Date endTime) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("deviceCode", deviceCode);
+        String timeType = "collectTime";
+        List<Sample> data = elasticsearch.getData(Constant.SAMPLE_INDEX, Constant.SAMPLE_TYPE, map, timeType, startTime, endTime, Sample.class);
+        if (!CollectionUtils.isEmpty(data)) {
+            List<Points> collect = data.stream().map(sample -> {
+                Points points = new Points();
+                points.setLatitude(sample.getLatitude());
+                points.setLongitude(sample.getLongitude());
+                return points;
+            }).collect(Collectors.toList());
+
+            return collect;
+        }
+
+        return Collections.emptyList();
     }
 }

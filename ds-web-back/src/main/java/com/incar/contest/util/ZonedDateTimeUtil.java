@@ -14,6 +14,8 @@ import java.util.Date;
  */
 public class ZonedDateTimeUtil {
 
+    public final static ZoneId ZONE_ID =ZoneId.of("Asia/Shanghai");
+
     public static Date getDate(Date date,Integer num){
         ZoneId defaultZoneId = ZoneId.systemDefault();
         Instant instant = date.toInstant();
@@ -94,6 +96,19 @@ public class ZonedDateTimeUtil {
         ZonedDateTime zonedDateTime = instant.atZone(defaultZoneId);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") ;
         return zonedDateTime.format(formatter);
+    }
+
+    /**
+     * @see DateUtil#stringToDate(String, String, ZoneId)
+     * @param dateStr
+     * @param format
+     * @return
+     */
+    public static Date stringToDate(String dateStr, String format){
+        if(dateStr==null||format==null){
+            return null;
+        }
+        return DateUtil.stringToDate(dateStr,format, ZONE_ID);
     }
 
 }
