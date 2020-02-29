@@ -24,7 +24,6 @@ subprojects {
 		annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
 		compile "org.slf4j:slf4j-api:1.7.28"
-		compile "org.springframework.boot:spring-boot-starter-logging:${springBootVersion}"
 
 		testCompile "junit:junit:4.12"
 		testCompile ("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
