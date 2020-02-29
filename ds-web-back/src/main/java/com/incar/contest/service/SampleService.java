@@ -1,19 +1,14 @@
 package com.incar.contest.service;
 
-import com.incar.contest.bean.GPS;
 import com.incar.contest.bean.Point;
 import com.incar.contest.bean.Sample;
 import com.incar.contest.elastic.Elasticsearch;
 import com.incar.contest.share.Constant;
-import com.incar.contest.util.GPSUtil;
 import com.incar.contest.util.TrajectoryCompressionUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StopWatch;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -28,8 +23,6 @@ public class SampleService {
 
     @Autowired
     private Elasticsearch elasticsearch;
-
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 统计数据总行数
@@ -86,14 +79,7 @@ public class SampleService {
             // 最大误差距离
             double dMax = 20d;
             // 压缩经纬度
-            points = TrajectoryCompressionUtil.TrajectoryOptimize(points, dMax);
-
-            // GPS坐标转换
-            StopWatch watch = new StopWatch();
-            watch.start();
-            points.forEach(GPSUtil::gps84_To_Gcj02_03);
-            watch.stop();
-            logger.info("StopWatch GPS坐标转换完成，转换数据量为：{}， 耗时：{} s",points.size(), watch.getTotalTimeSeconds());
+            return TrajectoryCompressionUtil.TrajectoryOptimize(points, dMax);
         }
 
         return Collections.emptyList();

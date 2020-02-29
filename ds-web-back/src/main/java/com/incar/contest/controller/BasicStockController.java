@@ -2,6 +2,7 @@ package com.incar.contest.controller;
 
 import com.incar.contest.bean.BasicStock;
 import com.incar.contest.service.BasicStockService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/basicStock")
+@Api(value = "基础示例调用接口 Client Restful API ", description = "基础示例调用接口 Client Restful API ", protocols = "application/json")
 public class BasicStockController {
     @Autowired
     private BasicStockService basicStockService;

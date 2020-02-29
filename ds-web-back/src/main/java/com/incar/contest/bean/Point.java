@@ -1,5 +1,7 @@
 package com.incar.contest.bean;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.text.DecimalFormat;
 import java.util.Date;
 
@@ -12,12 +14,15 @@ import java.util.Date;
 public class Point {
 
     //点ID
+    @ApiModelProperty(value = "采集时间")
     public Date time;
 
     //经度
+    @ApiModelProperty(value = "经度")
     public double longitude;
 
     //纬度
+    @ApiModelProperty(value = "纬度")
     public double latitude;
 
     public Point(){
