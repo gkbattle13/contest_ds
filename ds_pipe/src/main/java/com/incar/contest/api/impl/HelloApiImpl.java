@@ -1,6 +1,6 @@
-package com.incar.ds.api.impl;
+package com.incar.contest.api.impl;
 
-import com.incar.ds.api.HelloApi;
+import com.incar.contest.api.HelloApi;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloApiImpl implements HelloApi {
 
     @Override
-    @GetMapping("/api/ds/hello/sayHi")
+    @GetMapping("/api/contest/hello/sayHi")
     public String sayHi() {
         return "Good morning";
     }

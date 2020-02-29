@@ -1,4 +1,4 @@
-package com.incar.ds.api;
+package com.incar.contest.api;
 
 /**
  * 问候API接口

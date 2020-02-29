@@ -1,4 +1,4 @@
-package com.incar.ds;
+package com.incar.contest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
