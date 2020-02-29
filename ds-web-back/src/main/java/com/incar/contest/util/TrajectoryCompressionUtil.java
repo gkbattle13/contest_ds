@@ -80,18 +80,18 @@ public class TrajectoryCompressionUtil {
         pointsFilter.add(points.get(points.size() - 1));
 
         // 排序 - 升序
-        Collections.sort(pointsFilter);
+//        Collections.sort(pointsFilter);
         // 后面要根据别的数据进行排序
-//        Collections.sort(pointsFilter, (obj1, obj2) -> {
-//            // 升序
-//            if (obj1.getId() > obj2.getId()) {
-//                return 1;
-//            }
-//            if (obj1.getId() == obj2.getId()) {
-//                return 0;
-//            }
-//            return -1;
-//        });
+        Collections.sort(pointsFilter, (obj1, obj2) -> {
+            // 升序
+            if (obj1.getTime().compareTo(obj2.getTime()) != -1) {
+                return 1;
+            }
+            if (obj1.getTime().compareTo(obj2.getTime()) == 0) {
+                return 0;
+            }
+            return -1;
+        });
 
         return pointsFilter;
     }

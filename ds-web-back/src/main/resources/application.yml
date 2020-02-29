@@ -9,21 +9,10 @@ server:
     accept-count: 600
     max-threads: 800
 
-spring:
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/stock
-    username: root
-    password: rootroot
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database: mysql
-    show-sql: true
-
 # Elasticsearch Config
 elasticsearch:
   # host ip1,ip2,,,
-  host: {ES_HOST}
+  host: 112.124.3.139
   port: 9300
   clusterName: elasticsearch
   clientTransportSniff: false

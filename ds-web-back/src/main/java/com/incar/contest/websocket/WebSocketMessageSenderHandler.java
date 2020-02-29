@@ -3,6 +3,7 @@ package com.incar.contest.websocket;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
@@ -13,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Created by bzheng on 2020/2/29.
  */
-@Log4j2
+@Slf4j
 public class WebSocketMessageSenderHandler implements WebSocketHandler {
 
     // {key:vin, value:{key:sessionId,value:session}} 一个Vin码可能被多个用户访问，条件不一样返回的数据也不一样
@@ -31,7 +32,7 @@ public class WebSocketMessageSenderHandler implements WebSocketHandler {
         try {
             String json = JSON.toJSONString(message.getPayload());
             JSONObject jsonobject = JSONObject.parseObject(json);
-            log.info(jsonobject);
+            log.info(json);
 //            sendMessageToUser(jsonobject.get("VIN") + "", new TextMessage("服务器收到了，hello!"));
         } catch (Exception e) {
             e.printStackTrace();
