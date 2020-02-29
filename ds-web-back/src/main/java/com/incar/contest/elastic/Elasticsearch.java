@@ -10,6 +10,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortBuilder;
@@ -106,6 +107,37 @@ public class Elasticsearch {
      */
     public void save(String index, String type, String id, String json) {
         esClient.prepareIndex(index, type, id).setSource(json, XContentType.JSON).get();
+    }
+
+
+    /**
+     * 查询数据条数
+     * @param index
+     * @param type
+     * @param map
+     * @return
+     */
+    public Long getTotal(String index, String type, Map<String, Object> map) {
+        long size = 0L;
+        try {
+            BoolQueryBuilder qb = new BoolQueryBuilder();
+            if (null != map) {
+                Iterator<Map.Entry<String, Object>> entries = map.entrySet().iterator();
+                while(entries.hasNext()){
+                    Map.Entry<String, Object> entry = entries.next();
+                    qb.must(QueryBuilders.matchQuery(entry.getKey(), entry.getValue()));
+                }
+            }
+
+            SearchRequestBuilder search = esClient.prepareSearch(index).
+                    setTypes(type).setQuery(qb);
+
+            SearchResponse sr = search.get();//得到查询结果
+            size = sr.getHits().getTotalHits() ;
+        } catch (Exception e) {
+            logger.error("query is error");
+        }
+        return size;
     }
 
     /**
