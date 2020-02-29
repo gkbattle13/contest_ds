@@ -84,4 +84,28 @@ public class SampleService {
 
         return Collections.emptyList();
     }
+
+
+    /**
+     * 分页查询车辆的行驶总里程之和
+     * @param deviceCode
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    public List<Sample> findPageList(String deviceCode, Integer pageNum, Integer pageSize) {
+
+        if(StringUtils.isEmpty(pageNum)){
+            pageNum = 1;
+        }
+        if(StringUtils.isEmpty(pageSize)){
+            pageSize = 10;
+        }
+        Map<String, Object> map = new HashMap<>();
+        if (!StringUtils.isEmpty(deviceCode)) {
+            map.put("deviceCode", deviceCode);
+        }
+
+        return elasticsearch.getDataByPage(Constant.SAMPLE_INDEX, Constant.SAMPLE_TYPE, map, Sample.class, pageNum, pageSize);
+    }
 }

@@ -1,16 +1,14 @@
 package com.incar.contest.controller;
 
 import com.incar.contest.bean.Point;
+import com.incar.contest.bean.Sample;
 import com.incar.contest.service.SampleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -83,5 +81,19 @@ public class SampleController {
                                   @ApiParam(value = "采集结束时间", required = true)
                                       @RequestParam(value = "endTime") Date endTime) {
         return sampleService.queryTrack(deviceCode, startTime, endTime);
+    }
+
+
+    @GetMapping("/findPageList/{pageNum}/{pageSize}")
+    @ApiOperation(value = "分页查询车辆的行驶总里程之和", notes = "分页查询车辆的行驶总里程之和")
+    @ApiResponse(code = 200, message = "分页查询车辆的行驶总里程之和")
+    public List<Sample> findPageList(@ApiParam(value = "设备号", required = false)
+                                  @RequestParam(value = "deviceCode", required = false) String deviceCode,
+                                     @ApiParam(value = "当前页数")
+                                  @PathVariable(value = "pageNum") Integer pageNum,
+                                     @ApiParam(value = "每页条数")
+                                  @PathVariable(value = "pageSize") Integer pageSize) {
+
+        return sampleService.findPageList(deviceCode, pageNum, pageSize);
     }
 }

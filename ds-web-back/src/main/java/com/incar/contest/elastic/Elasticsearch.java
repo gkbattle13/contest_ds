@@ -240,6 +240,48 @@ public class Elasticsearch {
     }
 
 
+    public <T extends Object> List<T> getDataByPage(String index, String type, Map<String, Object> map, Class<T> clazz,
+                                              Integer pageNum, Integer pageSize) {
+
+        List<T> arr = new ArrayList<>();
+        try {
+            SortBuilder sortBuilder = SortBuilders.fieldSort("id").order(SortOrder.ASC);
+            BoolQueryBuilder qb = new BoolQueryBuilder();
+
+            if (null != map) {
+                Iterator<Map.Entry<String, Object>> entries = map.entrySet().iterator();
+                while(entries.hasNext()){
+                    Map.Entry<String, Object> entry = entries.next();
+                    qb.must(QueryBuilders.matchQuery(entry.getKey(), entry.getValue()));
+                }
+            }
+
+            Integer offset = (pageNum - 1) * pageSize;
+            // 查询条数
+            SearchRequestBuilder searchNum = esClient.prepareSearch(index)
+                    .setTypes(type)
+                    .setQuery(qb)
+                    .setFrom(offset)
+                    .setSize(pageSize);
+            SearchResponse srNum = searchNum.get();//得到查询结果
+            int total = (int) srNum.getHits().getTotalHits();
+
+            SearchRequestBuilder search = esClient.prepareSearch(index)
+                    .setTypes(type).setQuery(qb).addSort(sortBuilder)
+                    .setFrom(0)
+                    .setSize(total);
+            SearchResponse sr = search.get();//得到查询结果
+            for(SearchHit hits:sr.getHits()){
+                String json = JSON.toJSONString(hits.getSource()) ;
+                T obj = JSON.parseObject(json, clazz);
+                arr.add(obj) ;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return arr;
+    }
+
     /**
      * 关闭Client
      * 不要主动使用
