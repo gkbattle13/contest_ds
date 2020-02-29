@@ -1,6 +1,7 @@
 package com.incar.contest.bean;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 
 /**
  * Point
@@ -8,10 +9,10 @@ import java.text.DecimalFormat;
  * @author Kong, created on 2020-02-28T14:56.
  * @since 1.0.0-SNAPSHOT
  */
-public class Point implements Comparable<Point>{
+public class Point {
 
     //点ID
-    public int id;
+    public Date time;
 
     //经度
     public double longitude;
@@ -27,18 +28,18 @@ public class Point implements Comparable<Point>{
         this.latitude = latitude;
     }
 
-    public Point(int id, double longitude, double latitude) {
-        this.id = id;
+    public Point(Date time, double longitude, double latitude) {
+        this.time = time;
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
-    public int getId() {
-        return id;
+    public Date getTime() {
+        return time;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTime(Date time) {
+        this.time = time;
     }
 
     public double getLongitude() {
@@ -60,7 +61,7 @@ public class Point implements Comparable<Point>{
     //空构造函数
     public String toString(){
         //DecimalFormat df = new DecimalFormat("0.000000");
-        return this.id+"#"+this.latitude+","+this.longitude;
+        return this.time+"#"+this.latitude+","+this.longitude;
     }
     public String getTestString(){
         DecimalFormat df = new DecimalFormat("0.000000");
@@ -68,17 +69,6 @@ public class Point implements Comparable<Point>{
     }
     public String getResultString(){
         DecimalFormat df = new DecimalFormat("0.000000");
-        return this.id+"#"+df.format(this.latitude)+","+df.format(this.longitude);
-    }
-
-    @Override
-    public int compareTo(Point other) {
-        if(this.id<other.id) {
-            return -1;
-        }else if (this.id>other.id) {
-            return 1;
-        }
-
-        return 0;
+        return this.time+"#"+df.format(this.latitude)+","+df.format(this.longitude);
     }
 }

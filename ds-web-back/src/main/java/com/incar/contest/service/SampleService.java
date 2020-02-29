@@ -1,13 +1,15 @@
 package com.incar.contest.service;
 
-import com.incar.contest.bean.Points;
+import com.incar.contest.bean.Point;
 import com.incar.contest.bean.Sample;
 import com.incar.contest.elastic.Elasticsearch;
 import com.incar.contest.share.Constant;
+import com.incar.contest.util.TrajectoryCompressionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,20 +59,28 @@ public class SampleService {
         return total;
     }
 
-    public List<Points> queryTrack(String deviceCode, Date startTime, Date endTime) {
+    public List<Point> queryTrack(String deviceCode, Date startTime, Date endTime) {
         Map<String, Object> map = new HashMap<>();
         map.put("deviceCode", deviceCode);
         String timeType = "collectTime";
         List<Sample> data = elasticsearch.getData(Constant.SAMPLE_INDEX, Constant.SAMPLE_TYPE, map, timeType, startTime, endTime, Sample.class);
         if (!CollectionUtils.isEmpty(data)) {
-            List<Points> collect = data.stream().map(sample -> {
-                Points points = new Points();
-                points.setLatitude(sample.getLatitude());
-                points.setLongitude(sample.getLongitude());
-                return points;
+            List<Point> points = data.stream().map(sample -> {
+                String longitudeStr = sample.getLongitude();
+                String latitudeStr = sample.getLatitude();
+                double longitude = 0D;
+                double latitude = 0D;
+                if (!StringUtils.isEmpty(longitudeStr) && !StringUtils.isEmpty(latitudeStr)) {
+                    longitude = Double.parseDouble(longitudeStr.replace("E", ""));
+                    latitude = Double.valueOf(latitudeStr.replace("N", ""));
+                }
+                return new Point(sample.getCollectTime(), longitude, latitude);
             }).collect(Collectors.toList());
 
-            return collect;
+            // 最大误差距离
+            double dMax = 20d;
+            // 压缩经纬度
+            return TrajectoryCompressionUtil.TrajectoryOptimize(points, dMax);
         }
 
         return Collections.emptyList();
