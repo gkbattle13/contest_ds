@@ -1,5 +1,6 @@
 package com.incar.contest.service;
 
+import com.incar.contest.bean.DeviceInfo;
 import com.incar.contest.bean.Point;
 import com.incar.contest.bean.Sample;
 import com.incar.contest.elastic.Elasticsearch;
@@ -31,7 +32,7 @@ public class SampleService {
     public Long getCount() {
         Long total;
         try {
-            total = elasticsearch.getTotal(Constant.SAMPLE_INDEX, Constant.SAMPLE_TYPE, null);
+            total = elasticsearch.getTotal(Constant.SAMPLE_INDEX, Constant.SAMPLE_TYPE);
         } catch (Exception e) {
             throw new RuntimeException("获取总条数失败");
         }
@@ -42,23 +43,28 @@ public class SampleService {
     /**
      * 查询指定车辆指定日期的行驶总里程
      * @param deviceCode
+     * @param specified 指定日期
+     * @return
+     */
+    public DeviceInfo getTotalMileage(String deviceCode, Date specified) {
+        if (StringUtils.isEmpty(deviceCode)) {
+            throw new RuntimeException("deviceCode is null!!!");
+        }
+        double mileage = elasticsearch.getDataByGroup(Constant.SAMPLE_INDEX, Constant.SAMPLE_TYPE, deviceCode, specified);
+        return new DeviceInfo(deviceCode, mileage);
+    }
+
+    /**
+     * 查询车辆指定时间段(不短于72小时)的轨迹
+     * @param deviceCode
      * @param startTime
      * @param endTime
      * @return
      */
-    public Double getTotalMileage(String deviceCode, Date startTime, Date endTime) {
-        Double total = 0D;
-        Map<String, Object> map = new HashMap<>();
-        map.put("deviceCode", deviceCode);
-        String timeType = "collectTime";
-        List<Sample> data = elasticsearch.getData(Constant.SAMPLE_INDEX, Constant.SAMPLE_TYPE, map, timeType, startTime, endTime, Sample.class);
-        if (!CollectionUtils.isEmpty(data)) {
-            total = data.stream().filter(sample -> Objects.nonNull(sample) && Objects.nonNull(sample.getDistance())).mapToDouble(Sample::getDistance).sum();
-        }
-        return total;
-    }
-
     public List<Point> queryTrack(String deviceCode, Date startTime, Date endTime) {
+        if (StringUtils.isEmpty(deviceCode)) {
+            throw new RuntimeException("please choose deviceCode!!!");
+        }
         Map<String, Object> map = new HashMap<>();
         map.put("deviceCode", deviceCode);
         String timeType = "collectTime";
@@ -93,7 +99,7 @@ public class SampleService {
      * @param pageSize
      * @return
      */
-    public List<Sample> findPageList(String deviceCode, Integer pageNum, Integer pageSize) {
+    public List<DeviceInfo> findPageList(String deviceCode, Integer pageNum, Integer pageSize) {
 
         if(StringUtils.isEmpty(pageNum)){
             pageNum = 1;
@@ -106,6 +112,6 @@ public class SampleService {
             map.put("deviceCode", deviceCode);
         }
 
-        return elasticsearch.getDataByPage(Constant.SAMPLE_INDEX, Constant.SAMPLE_TYPE, map, Sample.class, pageNum, pageSize);
+        return elasticsearch.getDataByPage(Constant.MILEAGE_INDEX, Constant.MILEAGE_TYPE, map, DeviceInfo.class, pageNum, pageSize);
     }
 }

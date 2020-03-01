@@ -2,6 +2,7 @@ package com.incar.contest.util;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -595,17 +596,10 @@ public class DateUtil {
         return formatDate(new Date(), DATE_FORMAT_SECOND);
     }
 
-    public static void main(String [] args){
-        ZoneId zoneId1= ZoneId.of("Asia/Shanghai");
-        ZoneId zoneId2= ZoneId.of("+8");
-        ZonedDateTime zdt1=LocalDateTime.of(2019,4,3,11,11).atZone(zoneId1);
-        ZonedDateTime zdt2=LocalDateTime.of(2019,4,3,11,11).atZone(zoneId2);
-        System.out.println(zdt1.toInstant().toEpochMilli());
-        System.out.println(zdt2.toInstant().toEpochMilli());
-        System.out.println(OffsetDateTime.now().getOffset());
-        Date floorDate = getFloorDate(new Date(), ChronoUnit.DAYS, zoneId1);
-        Date ceilDate = getCeilDate(new Date(), ChronoUnit.DAYS, zoneId1);
-        Date plusDay = getPlusDay(floorDate, -1);
-        System.out.println(floorDate + "\n" + ceilDate + "\n" + plusDay);
+    public static Date getUtcInit() throws ParseException {
+        String startStr = "1970-01-01 00:00:00";
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_SECOND);
+        return dateFormat.parse(startStr);
     }
+
 }

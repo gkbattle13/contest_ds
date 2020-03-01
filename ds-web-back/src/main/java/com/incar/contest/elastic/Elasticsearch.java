@@ -1,6 +1,8 @@
 package com.incar.contest.elastic;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.incar.contest.util.DateUtil;
 import com.incar.contest.util.ZonedDateTimeUtil;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -12,6 +14,12 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.max.InternalMax;
+import org.elasticsearch.search.aggregations.metrics.max.Max;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -113,26 +121,21 @@ public class Elasticsearch {
      * 查询数据条数
      * @param index
      * @param type
-     * @param map
      * @return
      */
-    public Long getTotal(String index, String type, Map<String, Object> map) {
+    public Long getTotal(String index, String type) {
         long size = 0L;
         try {
-            BoolQueryBuilder qb = new BoolQueryBuilder();
-            if (null != map) {
-                Iterator<Map.Entry<String, Object>> entries = map.entrySet().iterator();
-                while(entries.hasNext()){
-                    Map.Entry<String, Object> entry = entries.next();
-                    qb.must(QueryBuilders.matchQuery(entry.getKey(), entry.getValue()));
-                }
-            }
+            SearchResponse response = esClient.prepareSearch(index)
+                    .setTypes(type)
+                    .setSize(0)
+                    .execute()
+                    .actionGet();
 
-            SearchRequestBuilder search = esClient.prepareSearch(index).
-                    setTypes(type).setQuery(qb);
-
-            SearchResponse sr = search.get();//得到查询结果
-            size = sr.getHits().getTotalHits() ;
+            JSONObject jsonObject = JSONObject.parseObject(response.toString());
+            JSONObject jsonObjectHits = JSONObject.parseObject(jsonObject.get("hits").toString());
+            String count_num = jsonObjectHits.get("total").toString();
+            size = Long.valueOf(count_num) ;
         } catch (Exception e) {
             logger.error("query is error");
         }
@@ -245,7 +248,6 @@ public class Elasticsearch {
 
         List<T> arr = new ArrayList<>();
         try {
-            SortBuilder sortBuilder = SortBuilders.fieldSort("id").order(SortOrder.ASC);
             BoolQueryBuilder qb = new BoolQueryBuilder();
 
             if (null != map) {
@@ -267,7 +269,7 @@ public class Elasticsearch {
             int total = (int) srNum.getHits().getTotalHits();
 
             SearchRequestBuilder search = esClient.prepareSearch(index)
-                    .setTypes(type).setQuery(qb).addSort(sortBuilder)
+                    .setTypes(type).setQuery(qb)
                     .setFrom(0)
                     .setSize(total);
             SearchResponse sr = search.get();//得到查询结果
@@ -281,6 +283,57 @@ public class Elasticsearch {
         }
         return arr;
     }
+
+
+    /**
+     * 功能：获取车辆指定日期的行驶里程
+     * @param index
+     * @param type
+     * @param deviceCode
+     * @param specified 指定日期，当天的截止日期
+     * @return
+     */
+    public double getDataByGroup(String index, String type, String deviceCode, Date specified) {
+        double mileage = 0d;
+        try {
+            //根据 任务id分组进行求和
+            SearchRequestBuilder builder = esClient.prepareSearch(index).setTypes(type);
+
+            BoolQueryBuilder qb = new BoolQueryBuilder();
+            qb.must(QueryBuilders.matchQuery("deviceCode", deviceCode));
+            qb.must(QueryBuilders.rangeQuery("collectTime")
+                    .from(ZonedDateTimeUtil.dateToStr(DateUtil.getUtcInit()))  //UTC 初始时间
+                    .to(ZonedDateTimeUtil.dateToStr(specified)));
+
+            //根据tripNo进行分组统计，统计别名为tripAgg
+            TermsAggregationBuilder aggregationBuilder = AggregationBuilders.terms("tripAgg").field("tripNo")
+                    .order(Terms.Order.aggregation("distanceMax", false))
+                    .subAggregation(
+                            AggregationBuilders.max("distanceMax").field("distance")
+                    ).size(10000);
+
+            //如果存在第三个，以此类推；
+            builder.setQuery(qb);
+            builder.addAggregation(aggregationBuilder);
+
+            SearchResponse responses= builder.execute().actionGet();
+
+            Terms aggregation = responses.getAggregations().get("tripAgg");
+            for (Terms.Bucket bucket : aggregation.getBuckets()) {
+                Aggregations aggregations = bucket.getAggregations();
+                double value = ((InternalMax) aggregations.asList().get(0)).getValue();
+                if (value > 0) {
+                    mileage += value;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return mileage;
+    }
+
+
 
     /**
      * 关闭Client

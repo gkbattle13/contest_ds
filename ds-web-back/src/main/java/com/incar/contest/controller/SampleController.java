@@ -1,5 +1,6 @@
 package com.incar.contest.controller;
 
+import com.incar.contest.bean.DeviceInfo;
 import com.incar.contest.bean.Point;
 import com.incar.contest.bean.Sample;
 import com.incar.contest.service.SampleService;
@@ -46,20 +47,17 @@ public class SampleController {
      * 查询指定车辆指定日期的行驶总里程
      *
      * @param deviceCode
-     * @param startTime
-     * @param endTime
+     * @param specified
      * @return
      */
     @GetMapping("/getTotalMileage")
     @ApiOperation(value = "查询指定车辆指定日期的行驶总里程", notes = "查询指定车辆指定日期的行驶总里程")
     @ApiResponse(code = 200, message = "查询指定车辆指定日期的行驶总里程")
-    public Double getTotalMileage(@ApiParam(value = "设备号", required = true)
+    public DeviceInfo getTotalMileage(@ApiParam(value = "设备号", required = true)
                                   @RequestParam(value = "deviceCode") String deviceCode,
-                                  @ApiParam(value = "采集开始时间", required = true)
-                                  @RequestParam(value = "startTime") Date startTime,
-                                  @ApiParam(value = "采集结束时间", required = true)
-                                  @RequestParam(value = "endTime") Date endTime) {
-        return sampleService.getTotalMileage(deviceCode, startTime, endTime);
+                                      @ApiParam(value = "指定日期", required = true)
+                                  @RequestParam(value = "specified") Date specified) {
+        return sampleService.getTotalMileage(deviceCode, specified);
     }
 
 
@@ -87,7 +85,7 @@ public class SampleController {
     @GetMapping("/findPageList/{pageNum}/{pageSize}")
     @ApiOperation(value = "分页查询车辆的行驶总里程之和", notes = "分页查询车辆的行驶总里程之和")
     @ApiResponse(code = 200, message = "分页查询车辆的行驶总里程之和")
-    public List<Sample> findPageList(@ApiParam(value = "设备号", required = false)
+    public List<DeviceInfo> findPageList(@ApiParam(value = "设备号", required = false)
                                   @RequestParam(value = "deviceCode", required = false) String deviceCode,
                                      @ApiParam(value = "当前页数")
                                   @PathVariable(value = "pageNum") Integer pageNum,
