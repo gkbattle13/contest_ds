@@ -2,7 +2,6 @@ package com.incar.contest.controller;
 
 import com.incar.contest.bean.DeviceInfo;
 import com.incar.contest.bean.Point;
-import com.incar.contest.bean.Sample;
 import com.incar.contest.service.SampleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -93,5 +92,15 @@ public class SampleController {
                                   @PathVariable(value = "pageSize") Integer pageSize) {
 
         return sampleService.findPageList(deviceCode, pageNum, pageSize);
+    }
+
+
+
+
+    @GetMapping("/totalMileage")
+    @ApiOperation(value = "查询所有车辆的行驶总里程之和", notes = "查询所有车辆的行驶总里程之和")
+    @ApiResponse(code = 200, message = "查询所有车辆的行驶总里程之和")
+    public Double totalMileage() {
+        return sampleService.getTotalMileage();
     }
 }

@@ -154,7 +154,6 @@ public class Elasticsearch {
     public <T extends Object> List<T> getData(String index, String type, Map<String, Object> map, Class<T> clazz) {
         List<T> arr = new ArrayList<>();
         try {
-            SortBuilder sortBuilder = SortBuilders.fieldSort("id").order(SortOrder.ASC);
             BoolQueryBuilder qb = new BoolQueryBuilder();
 
             if (null != map) {
@@ -167,12 +166,12 @@ public class Elasticsearch {
 
             // 查询条数
             SearchRequestBuilder searchNum = esClient.prepareSearch(index)
-                    .setTypes(type).setQuery(qb);
+                    .setTypes(type).setQuery(qb).setSize(10000);
             SearchResponse srNum = searchNum.get();//得到查询结果
             int total = (int) srNum.getHits().getTotalHits();
 
             SearchRequestBuilder search = esClient.prepareSearch(index)
-                    .setTypes(type).setQuery(qb).addSort(sortBuilder)
+                    .setTypes(type).setQuery(qb)
                     .setFrom(0)
                     .setSize(total);
             SearchResponse sr = search.get();//得到查询结果

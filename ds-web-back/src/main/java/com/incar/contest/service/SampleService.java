@@ -95,7 +95,7 @@ public class SampleService {
             watch.start();
             points.forEach(GPSUtil::gps84_To_Gcj02_03);
             watch.stop();
-//            logger.info("StopWatch GPS坐标转换完成，转换数据量为：{}， 耗时：{} s",points.size(), watch.getTotalTimeSeconds());
+            log.info("StopWatch GPS坐标转换完成，转换数据量为：{}， 耗时：{} s",points.size(), watch.getTotalTimeSeconds());
             return points;
         }
 
@@ -125,4 +125,19 @@ public class SampleService {
 
         return elasticsearch.getDataByPage(Constant.MILEAGE_INDEX, Constant.MILEAGE_TYPE, map, DeviceInfo.class, pageNum, pageSize);
     }
+
+
+    /**
+     * 查询所有车辆的行驶总里程之和
+     * @return
+     */
+    public double getTotalMileage() {
+        List<DeviceInfo> deviceInfos = elasticsearch.getData(Constant.MILEAGE_INDEX, Constant.MILEAGE_TYPE, null, DeviceInfo.class);
+        double totalMileAge = 0d;
+        if (null != deviceInfos && deviceInfos.size() >0) {
+            totalMileAge = deviceInfos.stream().mapToDouble(DeviceInfo::getMileage).sum();
+        }
+        return totalMileAge;
+    }
+
 }
