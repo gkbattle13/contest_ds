@@ -83,8 +83,8 @@ public class SampleService {
                         longitude = Double.parseDouble(longitudeStr.replace("E", ""));
                         latitude = Double.valueOf(latitudeStr.replace("N", ""));
                     } catch (NumberFormatException e) {
-                        return null;
                         log.error("longitude：{}， latitude：{} s", longitudeStr, latitudeStr);
+                        return null;
                     }
                 }
                 return new Point(sample.getCollectTime(), longitude, latitude);
