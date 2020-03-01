@@ -19,7 +19,6 @@ import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.max.InternalMax;
-import org.elasticsearch.search.aggregations.metrics.max.Max;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -128,6 +127,44 @@ public class Elasticsearch {
         try {
             SearchResponse response = esClient.prepareSearch(index)
                     .setTypes(type)
+                    .setSize(0)
+                    .execute()
+                    .actionGet();
+
+            JSONObject jsonObject = JSONObject.parseObject(response.toString());
+            JSONObject jsonObjectHits = JSONObject.parseObject(jsonObject.get("hits").toString());
+            String count_num = jsonObjectHits.get("total").toString();
+            size = Long.valueOf(count_num) ;
+        } catch (Exception e) {
+            logger.error("query is error");
+        }
+        return size;
+    }
+
+
+
+    /**
+     * 查询数据条数
+     * @param index
+     * @param type
+     * @return
+     */
+    public Long getTotal(String index, String type, Map<String, Object> map) {
+        long size = 0L;
+        try {
+            BoolQueryBuilder qb = new BoolQueryBuilder();
+
+            if (null != map) {
+                Iterator<Map.Entry<String, Object>> entries = map.entrySet().iterator();
+                while(entries.hasNext()){
+                    Map.Entry<String, Object> entry = entries.next();
+                    qb.must(QueryBuilders.matchQuery(entry.getKey(), entry.getValue()));
+                }
+            }
+
+            SearchResponse response = esClient.prepareSearch(index)
+                    .setTypes(type)
+                    .setQuery(qb)
                     .setSize(0)
                     .execute()
                     .actionGet();

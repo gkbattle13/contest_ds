@@ -1,6 +1,7 @@
 package com.incar.contest.service;
 
 import com.incar.contest.bean.DeviceInfo;
+import com.incar.contest.bean.Pagination;
 import com.incar.contest.bean.Point;
 import com.incar.contest.bean.Sample;
 import com.incar.contest.elastic.Elasticsearch;
@@ -116,7 +117,7 @@ public class SampleService {
      * @param pageSize
      * @return
      */
-    public List<DeviceInfo> findPageList(String deviceCode, Integer pageNum, Integer pageSize) {
+    public Pagination<DeviceInfo> findPageList(String deviceCode, Integer pageNum, Integer pageSize) {
 
         if(StringUtils.isEmpty(pageNum)){
             pageNum = 1;
@@ -129,7 +130,25 @@ public class SampleService {
             map.put("deviceCode", deviceCode);
         }
 
-        return elasticsearch.getDataByPage(Constant.MILEAGE_INDEX, Constant.MILEAGE_TYPE, map, DeviceInfo.class, pageNum, pageSize);
+        //初始化
+        Pagination<DeviceInfo> pagination = new Pagination<>();
+        pagination.setPageSize(pageSize);
+        pagination.setPageNum(pageNum);
+        //总条数
+        int total = Math.toIntExact(elasticsearch.getTotal(Constant.MILEAGE_INDEX, Constant.MILEAGE_TYPE, map));
+
+        pagination.setTotalData(total);
+        if (0 == total) {
+            pagination.setTotalPage(0);
+            return pagination;
+        }
+        int totalPage = (total - 1) / pageSize + 1;
+        pagination.setTotalPage(totalPage);
+
+        List<DeviceInfo> deviceInfos = elasticsearch.getDataByPage(Constant.MILEAGE_INDEX, Constant.MILEAGE_TYPE, map, DeviceInfo.class, pageNum, pageSize);
+        pagination.setList(deviceInfos);
+
+        return pagination;
     }
 
 

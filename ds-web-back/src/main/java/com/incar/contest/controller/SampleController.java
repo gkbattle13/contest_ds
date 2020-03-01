@@ -1,6 +1,7 @@
 package com.incar.contest.controller;
 
 import com.incar.contest.bean.DeviceInfo;
+import com.incar.contest.bean.Pagination;
 import com.incar.contest.bean.Point;
 import com.incar.contest.service.SampleService;
 import io.swagger.annotations.Api;
@@ -84,11 +85,11 @@ public class SampleController {
     @GetMapping("/findPageList/{pageNum}/{pageSize}")
     @ApiOperation(value = "分页查询车辆的行驶总里程之和", notes = "分页查询车辆的行驶总里程之和")
     @ApiResponse(code = 200, message = "分页查询车辆的行驶总里程之和")
-    public List<DeviceInfo> findPageList(@ApiParam(value = "设备号", required = false)
+    public Pagination<DeviceInfo> findPageList(@ApiParam(value = "设备号", required = false)
                                   @RequestParam(value = "deviceCode", required = false) String deviceCode,
-                                     @ApiParam(value = "当前页数")
+                                               @ApiParam(value = "当前页数")
                                   @PathVariable(value = "pageNum") Integer pageNum,
-                                     @ApiParam(value = "每页条数")
+                                               @ApiParam(value = "每页条数")
                                   @PathVariable(value = "pageSize") Integer pageSize) {
 
         return sampleService.findPageList(deviceCode, pageNum, pageSize);
