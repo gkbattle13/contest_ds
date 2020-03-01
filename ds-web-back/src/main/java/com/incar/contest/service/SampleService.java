@@ -72,17 +72,23 @@ public class SampleService {
         String timeType = "collectTime";
         List<Sample> data = elasticsearch.getData(Constant.SAMPLE_INDEX, Constant.SAMPLE_TYPE, map, timeType, startTime, endTime, Sample.class);
         if (!CollectionUtils.isEmpty(data)) {
+
             List<Point> points = data.stream().map(sample -> {
                 String longitudeStr = sample.getLongitude();
                 String latitudeStr = sample.getLatitude();
                 double longitude = 0D;
                 double latitude = 0D;
                 if (!StringUtils.isEmpty(longitudeStr) && !StringUtils.isEmpty(latitudeStr)) {
-                    longitude = Double.parseDouble(longitudeStr.replace("E", ""));
-                    latitude = Double.valueOf(latitudeStr.replace("N", ""));
+                    try {
+                        longitude = Double.parseDouble(longitudeStr.replace("E", ""));
+                        latitude = Double.valueOf(latitudeStr.replace("N", ""));
+                    } catch (NumberFormatException e) {
+                        return null;
+                        log.error("longitude：{}， latitude：{} s", longitudeStr, latitudeStr);
+                    }
                 }
                 return new Point(sample.getCollectTime(), longitude, latitude);
-            }).collect(Collectors.toList());
+            }).filter(Objects::nonNull).collect(Collectors.toList());
 
             // 最大误差距离
             double dMax = 20d;
