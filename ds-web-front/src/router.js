@@ -383,19 +383,19 @@ const router = new Router({
                         rule: 'editor'
                     },
                 },
-                {
-                    path: '/ui-elements/ag-grid-table',
-                    name: 'ag-grid-table',
-                    component: () => import('./views/ui-elements/ag-grid-table/AgGridTable.vue'),
-                    meta: {
-                        breadcrumb: [
-                            { title: 'Home', url: '/' },
-                            { title: 'agGrid Table', active: true },
-                        ],
-                        pageTitle: 'agGrid Table',
-                        rule: 'editor'
-                    },
-                },
+                // {
+                //     path: '/ui-elements/ag-grid-table',
+                //     name: 'ag-grid-table',
+                //     component: () => import('./views/ui-elements/ag-grid-table/AgGridTable.vue'),
+                //     meta: {
+                //         breadcrumb: [
+                //             { title: 'Home', url: '/' },
+                //             { title: 'agGrid Table', active: true },
+                //         ],
+                //         pageTitle: 'agGrid Table',
+                //         rule: 'editor'
+                //     },
+                // },
 
         // =============================================================================
         // COMPONENT ROUTES
@@ -1049,6 +1049,20 @@ const router = new Router({
                         pageTitle: '车辆监控',
                         rule: 'editor'
                     },
+                },
+                {
+                  path: '/ui-elements/ag-grid-table',
+                  name: 'ag-grid-table',
+                  component: () => import('./views/ui-elements/ag-grid-table/AgGridTable.vue'),
+                  meta: {
+                    breadcrumb: [
+                      { title: 'Home', url: '/' },
+                      { title: '车辆数据统计'},
+                      { title: '车辆里程记录', active: true }
+                    ],
+                    pageTitle: '车辆里程记录',
+                    rule: 'editor'
+                  },
                 },
 
 

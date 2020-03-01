@@ -17,13 +17,22 @@
       <!--      </vs-col>-->
 
       <div class="vx-col mb-2 default-input">
-        <vs-input class="inputx" placeholder="Vin" v-model="vin"/>
+        <vs-input class="inputx" placeholder="vin" v-model="vin" name="vin" v-validate="'required'"/>
+        <span class="text-danger text-sm" v-show="errors.has('vin')">{{ errors.first('vin') }}</span>
       </div>
       <div class="vx-col mb-2">
-        <flat-pickr :config="configs" v-model="sdatetime" placeholder="Start Time"/>
+        <flat-pickr :config="configs" v-model="sdatetime" placeholder="Start Time" name="sdatetime"
+                    v-validate="'required'"/>
+        <div>
+          <span class="text-danger text-sm" v-show="errors.has('sdatetime')">{{ errors.first('sdatetime') }}</span>
+        </div>
       </div>
       <div class="vx-col mb-2">
-        <flat-pickr :config="configs" v-model="edatetime" placeholder="End Time"/>
+        <flat-pickr :config="configs" v-model="edatetime" placeholder="End Time" name="edatetime"
+                    v-validate="'required'"/>
+        <div>
+          <span class="text-danger text-sm" v-show="errors.has('edatetime')">{{ errors.first('edatetime') }}</span>
+        </div>
       </div>
       <vs-button radius color="primary" type="border" icon="search" @click="track()"/>
     </div>
@@ -37,15 +46,7 @@
       </div>
 
       <div>
-        <button @click="add()">add marker</button>
-        <button @click="track()">track</button>
-        <button @click="start()">start</button>
-        <button @click="stop()">stop</button>
-        <button @click="destroy()">destroy</button>
-        <button @click="render()">render</button>
-        <button @click="hide()">hide</button>
-        <button @click="show()">show</button>
-        <button @click="getData()">getData</button>
+        <button @click="clear()">clear</button>
       </div>
     </div>
   </vx-card>
@@ -71,10 +72,11 @@ export default {
       vin: null,
       sdatetime: new Date(),
       edatetime: new Date(),
+      pathSimplifier: null,
       configs: {
         enableTime: true,
         enableSeconds: true,
-        dateFormat: 'Y-m-d H:i:s',
+        dateFormat: 'Y-m-d H:i:S',
         locale: China, // locale for this instance only
       },
       zoom: 12,
@@ -82,16 +84,36 @@ export default {
       amapManager: amapManager,
       nav: null,
       path: null,
+      pathData: [],
       events: {
         // eslint-disable-next-line no-unused-vars
         init(map) {
-          AMapUI.loadUI(['overlay/SimpleMarker'], function (SimpleMarker) {
-            // eslint-disable-next-line no-unused-vars
-            const marker = new SimpleMarker({
-              iconLabel: 'A',
-              iconStyle: 'red',
-              map: map,
-              position: map.getCenter()
+          // AMapUI.loadUI(['overlay/SimpleMarker'], function (SimpleMarker) {
+          //   // eslint-disable-next-line no-unused-vars
+          //   const marker = new SimpleMarker({
+          //     iconLabel: 'A',
+          //     iconStyle: 'red',
+          //     map: map,
+          //     position: map.getCenter()
+          //   });
+          // });
+
+          AMap.plugin('AMap.Geolocation', function () {
+            var geolocation = new AMap.Geolocation({
+              enableHighAccuracy: true,//是否使用高精度定位，默认:true
+              timeout: 10000,          //超过10秒后停止定位，默认：5s
+              buttonPosition: 'RB',    //定位按钮的停靠位置
+              buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+              zoomToAccuracy: true,   //定位成功后是否自动调整地图视野到定位点
+
+            });
+            map.addControl(geolocation);
+            geolocation.getCurrentPosition(function (status, result) {
+              if (status === 'complete') {
+                console.log(result);
+              } else {
+                console.log(result);
+              }
             });
           });
         }
@@ -101,12 +123,35 @@ export default {
 
   methods: {
     async getData() {
-      console.log("getData......")
+      let auth = {
+        "accountNonExpired": true,
+        "accountNonLocked": true,
+        "authorities": [
+          {
+            "authority": ""
+          }
+        ],
+        "credentialsNonExpired": true,
+        "enabled": true,
+        "moduleType": "1",
+        "password": "",
+        "username": "",
+        "u": "18607157691",
+        "p": "123456",
+        "ts": 123456,
+        "v": "NA"
+      };
       const me = this;
-      await me.$http.get("https://a.amap.com/amap-ui/static/data/big-routes.json").then(res => {
+      await me.$http.post("/api/plat/auth/login", auth).then(res => {
         console.log(res);
       }).catch(err => {
         console.log(err);
+        this.$vs.notify({
+          title: "",
+          text: error,
+          color: 'danger',
+          position: 'top-left'
+        });
       })
     },
     stop() {
@@ -133,6 +178,46 @@ export default {
       const me = this;
       me.path.show();
     },
+    clear() {
+      const me = this;
+      if (me.path != null) {
+        me.path.setData([]);
+        me.nav.destroy();
+      }
+    },
+    pathSet() {
+      const me = this;
+      me.clear();
+      me.path.setData([{
+        name: '路线1',
+        path: me.pathData[5].path
+      }]);
+
+      let newNav = me.path.createPathNavigator(0, {
+        loop: true, // 循环播放
+        speed: 1000000, // 巡航速度，单位千米/小时
+        pathNavigatorStyle: {
+          width: 16,
+          height: 32,
+          //使用图片
+          content: me.pathSimplifier.Render.Canvas.getImageContent(CarUrl, onload, onerror),
+          strokeStyle: null,
+          fillStyle: null,
+          // //经过路径的样式
+          pathLinePassedStyle: {
+            lineWidth: 6,
+            strokeStyle: 'black',
+            dirArrowStyle: {
+              stepSpace: 15,
+              strokeStyle: 'red'
+            }
+          }
+        }
+      });
+      newNav.start();
+      me.nav = newNav;
+
+    },
     add() {
       let o = amapManager.getMap();
       let marker = new AMap.Marker({
@@ -142,38 +227,27 @@ export default {
     },
     track() {
       const me = this;
-      console.log(me.vin);
-
-      console.log(moment(me.sdatetime).format("YYYY-MM-DD HH:mm:ss"));
-      console.log(moment(me.edatetime).format("YYYY-MM-DD HH:mm:ss"));
-
+      // 清除之前的轨迹
+      me.clear();
       // eslint-disable-next-line no-unused-vars
       AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function (PathSimplifier, $) {
-
         if (!PathSimplifier.supportCanvas) {
           alert('当前环境不支持 Canvas！');
           return;
         }
 
+        me.pathSimplifier = PathSimplifier;
         let map = amapManager.getMap();
 
-        // eslint-disable-next-line no-unused-vars
-        var emptyLineStyle = {
-          lineWidth: 0,
-          fillStyle: null,
-          strokeStyle: null,
-          borderStyle: null
-        };
-
-        //just some colors
-        var colors = [
+        // just some colors
+        let colors = [
           "#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00",
           "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707",
           "#651067", "#329262", "#5574a6", "#3b3eac"
         ];
 
 
-        var pathSimplifierIns = new PathSimplifier({
+        let pathSimplifierIns = new PathSimplifier({
           zIndex: 100,
           //autoSetFitView:false,
           map: map, //所属的地图实例
@@ -191,22 +265,12 @@ export default {
 
 
           renderOptions: {
-            // renderAllPointsIfNumberBelow: 100 //绘制路线节点，如不需要可设置为-1
-            //将点、线相关的style全部置emptyLineStyle
-            // pathLineStyle: emptyLineStyle,
-            // pathLineSelectedStyle: emptyLineStyle,
-            // pathLineHoverStyle: emptyLineStyle,
-            // keyPointStyle: emptyLineStyle,
-            // startPointStyle: emptyLineStyle,
-            // endPointStyle: emptyLineStyle,
-            // keyPointHoverStyle: emptyLineStyle,
-            // keyPointOnSelectedPathLineStyle: emptyLineStyle
             pathLineStyle: {
               dirArrowStyle: true
             },
             getPathStyle: function (pathItem, zoom) {
 
-              var color = colors[pathItem.pathIndex % colors.length],
+              let color = colors[pathItem.pathIndex % colors.length],
                 lineWidth = Math.round(4 * Math.pow(1.1, zoom - 3));
 
               return {
@@ -225,66 +289,68 @@ export default {
           }
         });
 
-        window.pathSimplifierIns = pathSimplifierIns;
+        // window.pathSimplifierIns = pathSimplifierIns; "https://a.amap.com/amap-ui/static/data/big-routes.json"
+        me.$validator.validateAll().then(result => {
+          if (result) {
+            let dataUrl = "/api/contest/sample/queryTrack";
+            let param = {
+              "deviceCode": me.vin,
+              "startTime": moment(me.sdatetime).format("YYYY-MM-DD HH:mm:ss"),
+              "endTime": moment(me.edatetime).format("YYYY-MM-DD HH:mm:ss")
+            };
 
-        me.$http.get("https://a.amap.com/amap-ui/static/data/big-routes.json").then(res => {
-          console.log(res);
-          //设置数据
-          // pathSimplifierIns.setData([{
-          //   name: '路线0',
-          //   path: [
-          //     [116.405289, 39.904987],
-          //     [113.964458, 40.54664],
-          //     [111.47836, 41.135964],
-          //     [108.949297, 41.670904],
-          //     [106.380111, 42.149509],
-          //     [103.774185, 42.56996],
-          //     [101.135432, 42.930601],
-          //     [98.46826, 43.229964],
-          //     [95.777529, 43.466798],
-          //     [93.068486, 43.64009],
-          //     [90.34669, 43.749086],
-          //     [87.61792, 43.793308]
-          //   ]
-          // }]);
-          let path = res.data[7].path;
-          pathSimplifierIns.setData([{
-            name: '路线0',
-            path: path
-          }]);
+            me.$http.get(dataUrl, {params: param}).then(res => {
+              let path = res.data;
+              let newPath;
+              newPath = path.map(item => {
+                return [item.longitude, item.latitude];
+              });
+              me.pathData = newPath;
+              pathSimplifierIns.setData([{
+                name: '路线0',
+                path: newPath
+              }]);
 
-          me.path = pathSimplifierIns;
+              me.path = pathSimplifierIns;
 
-          //对第一条线路（即索引 0）创建一个巡航器
-          var navg1 = pathSimplifierIns.createPathNavigator(0, {
-            loop: true, // 循环播放
-            speed: 1000000, // 巡航速度，单位千米/小时
-            pathNavigatorStyle: {
-              width: 16,
-              height: 32,
-              //使用图片
-              content: PathSimplifier.Render.Canvas.getImageContent(CarUrl, onload, onerror),
-              strokeStyle: null,
-              fillStyle: null,
-              // //经过路径的样式
-              pathLinePassedStyle: {
-                lineWidth: 6,
-                strokeStyle: 'black',
-                dirArrowStyle: {
-                  stepSpace: 15,
-                  strokeStyle: 'red'
+              // 创建巡航器
+              var nav = pathSimplifierIns.createPathNavigator(0, {
+                loop: true, // 循环播放
+                speed: 4000, // 巡航速度，单位千米/小时
+                pathNavigatorStyle: {
+                  width: 16,
+                  height: 32,
+                  //使用图片
+                  content: PathSimplifier.Render.Canvas.getImageContent(CarUrl, onload, onerror),
+                  strokeStyle: null,
+                  fillStyle: null,
+                  // //经过路径的样式
+                  pathLinePassedStyle: {
+                    lineWidth: 6,
+                    strokeStyle: 'black',
+                    dirArrowStyle: {
+                      stepSpace: 15,
+                      strokeStyle: 'red'
+                    }
+                  }
                 }
-              }
-            }
-          });
-          me.nav = navg1;
+              });
 
-          navg1.start();
-        }).catch(err => {
-          console.log(err);
+              me.nav = nav;
+              nav.start();
+            }).catch(err => {
+              console.log(err);
+              me.$vs.notify({
+                title: "",
+                text: err,
+                color: 'danger',
+                position: 'top-right'
+              });
+            })
+          } else {
+            // form have errors
+          }
         })
-
-
       });
     }
   }

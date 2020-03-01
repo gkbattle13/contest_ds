@@ -28,6 +28,9 @@
                 <vs-radio v-model="locale" vs-value="pt" class="mt-3">
                     <span class="mr-2">Portuguese</span>
                 </vs-radio>
+              <vs-radio v-model="locale" vs-value="zh" class="mt-3">
+                <span class="mr-2">China</span>
+              </vs-radio>
             </div>
 
             <vx-card :title="$t('demoTitle')" class="mt-base" no-shadow card-border>

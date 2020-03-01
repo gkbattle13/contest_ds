@@ -20,7 +20,8 @@
           <vs-dropdown vs-trigger-click class="cursor-pointer">
             <div
               class="p-4 border border-solid d-theme-border-grey-light rounded-full d-theme-dark-bg cursor-pointer flex items-center justify-between font-medium">
-              <span class="mr-2">{{ currentPage * paginationPageSize - (paginationPageSize - 1) }} - {{ contacts.length - currentPage * paginationPageSize > 0 ? currentPage * paginationPageSize : contacts.length }} of {{ contacts.length }}</span>
+              <!--              <span class="mr-2">{{ currentPage * paginationPageSize - (paginationPageSize - 1) }} - {{ contacts.length - currentPage * paginationPageSize > 0 ? currentPage * paginationPageSize : contacts.length }} of {{ contacts.length }}</span>-->
+              <span class="mr-2">{{ currentPage * paginationPageSize - (paginationPageSize - 1) }} - {{ total - currentPage * paginationPageSize > 0 ? currentPage * paginationPageSize : total.length }} of {{ total }}</span>
               <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4"/>
             </div>
             <!-- <vs-button class="btn-drop" type="line" color="primary" icon-pack="feather" icon="icon-chevron-down"></vs-button> -->
@@ -44,7 +45,7 @@
 
         <!-- TABLE ACTION COL-2: SEARCH & EXPORT AS CSV -->
         <div class="flex flex-wrap items-center justify-between ag-grid-table-actions-right">
-          <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchQuery" @input="updateSearchQuery" placeholder="Search..."/>
+          <vs-input class="mb-4 md:mb-0 mr-4" v-model="searchQuery" @blur="updateSearchQuery" placeholder="Search..."/>
           <vs-button class="mb-4 md:mb-0" @click="gridApi.exportDataAsCsv()">Export as CSV</vs-button>
         </div>
       </div>
@@ -76,6 +77,7 @@
 <script>
 import {AgGridVue} from "ag-grid-vue"
 import contacts from './data.json'
+import _ from "lodash";
 
 import '@/assets/scss/vuexy/extraComponents/agGridStyleOverride.scss'
 
@@ -89,6 +91,7 @@ export default {
       gridOptions: {},
       maxPageNumbers: 7,
       gridApi: null,
+      total: 0,
       defaultColDef: {
         sortable: true,
         editable: true,
@@ -97,87 +100,87 @@ export default {
       },
       columnDefs: [
         {
-          headerName: 'First Name',
-          field: 'firstname',
-          width: 175,
+          headerName: '设备号',
+          field: 'deviceCode',
+          width: 275,
           filter: true,
           checkboxSelection: true,
           headerCheckboxSelectionFilteredOnly: true,
           headerCheckboxSelection: true,
         },
         {
-          headerName: 'Last Name',
-          field: 'lastname',
+          headerName: '里程',
+          field: 'mileage',
           filter: true,
           width: 175,
-        },
-        {
-          headerName: 'Email',
-          field: 'email',
-          filter: true,
-          width: 250,
-          pinned: 'left'
-        },
-        {
-          headerName: 'Company',
-          field: 'company',
-          filter: true,
-          width: 250,
-        },
-        {
-          headerName: 'City',
-          field: 'city',
-          filter: true,
-          width: 150,
-        },
-        {
-          headerName: 'Country',
-          field: 'country',
-          filter: true,
-          width: 150,
-        },
-        {
-          headerName: 'State',
-          field: 'state',
-          filter: true,
-          width: 125,
-        },
-        {
-          headerName: 'Zip',
-          field: 'zip',
-          filter: true,
-          width: 125,
-        },
-        {
-          headerName: 'Followers',
-          field: 'followers',
-          filter: "agNumberColumnFilter",
-          width: 125,
-        },
+        }
+        // {
+        //   headerName: 'Email',
+        //   field: 'email',
+        //   filter: true,
+        //   width: 250,
+        //   pinned: 'left'
+        // },
+        // {
+        //   headerName: 'Company',
+        //   field: 'company',
+        //   filter: true,
+        //   width: 250,
+        // },
+        // {
+        //   headerName: 'City',
+        //   field: 'city',
+        //   filter: true,
+        //   width: 150,
+        // },
+        // {
+        //   headerName: 'Country',
+        //   field: 'country',
+        //   filter: true,
+        //   width: 150,
+        // },
+        // {
+        //   headerName: 'State',
+        //   field: 'state',
+        //   filter: true,
+        //   width: 125,
+        // },
+        // {
+        //   headerName: 'Zip',
+        //   field: 'zip',
+        //   filter: true,
+        //   width: 125,
+        // },
+        // {
+        //   headerName: 'Followers',
+        //   field: 'followers',
+        //   filter: "agNumberColumnFilter",
+        //   width: 125,
+        // },
       ],
-      contacts: contacts,
+      contacts: [],
     }
   },
   watch: {
     '$store.state.windowWidth'(val) {
       if (val <= 576) {
         this.maxPageNumbers = 4
-        this.gridOptions.columnApi.setColumnPinned('email', null)
-      } else this.gridOptions.columnApi.setColumnPinned('email', 'left')
+        this.gridOptions.columnApi.setColumnPinned('deviceCode', null)
+      } else this.gridOptions.columnApi.setColumnPinned('deviceCode', 'left')
+    },
+    currentPage: function (newPage, oldPage) {
+      console.log("newPage:%d,oldPage:%d", newPage, oldPage);
+      this.loadData();
     }
   },
   computed: {
     paginationPageSize() {
-      if (this.gridApi){
-        console.log("this.gridApi")
-        console.log(this.gridApi)
-        console.log(this.gridApi.paginationGetPageSize())
-        console.log("this.gridApi")
+      if (this.gridApi) {
         return this.gridApi.paginationGetPageSize()
-      }
-      else return 50
+      } else return 50
     },
     totalPages() {
+      if (this.total > 0) return Math.ceil(this.total / this.gridApi.paginationGetPageSize());
       if (this.gridApi) return this.gridApi.paginationGetTotalPages()
       else return 0
     },
@@ -193,11 +196,40 @@ export default {
   },
   methods: {
     updateSearchQuery(val) {
-      this.gridApi.setQuickFilter(val)
+      const me = this;
+      console.log("updateSearchQuery:%s", me.searchQuery);
+      me.loadData();
+      // this.gridApi.setQuickFilter(val)
+    },
+    loadData() {
+      const me = this;
+      let dataUrl = "/api/contest/sample/findPageList/" + me.currentPage + "/" + me.paginationPageSize;
+      if (!_.isEmpty(me.searchQuery)) {
+        dataUrl = dataUrl.concat("?deviceCode=").concat(me.searchQuery);
+      }
+
+      // get all vehicle data
+      me.$http.get(dataUrl)
+        .then((response) => {
+          console.log(response);
+          me.contacts = response.data.list;
+          me.total = response.data.totalData;
+        })
+        .catch((error) => {
+          console.log(error);
+          me.$vs.notify({
+            title: "",
+            text: error,
+            color: 'danger',
+            position: 'top-right'
+          });
+        })
     }
   },
   mounted() {
     this.gridApi = this.gridOptions.api
+    this.contacts = contacts;
+    this.loadData();
 
     /* =================================================================
       NOTE:

@@ -31,7 +31,7 @@ export default {
     CardActions: 'Card Actions',
     CardColors: 'Card Colors',
     Table: 'Table',
-    agGridTable: 'agGrid Table',
+    agGridTable: '车辆运行数据',
     Components: 'Components',
     Alert: 'Alert',
     Avatar: 'Avatar',

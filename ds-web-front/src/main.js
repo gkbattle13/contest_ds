@@ -106,17 +106,16 @@ Vue.use(VueGoogleMaps, {
 })
 
 
-// 高德地图
-import VueAMap from "vue-amap";
-
-
-Vue.use(VueAMap);
-
-
 // Vuejs - Vue wrapper for hammerjs
 import {VueHammer} from 'vue2-hammer'
 
 Vue.use(VueHammer);
+
+// 高德地图
+import VueAMap from "vue-amap";
+
+Vue.use(VueAMap);
+
 VueAMap.initAMapApiLoader({
   // 高德地图key
   // key: "a571b7296a612ede8a843c6b0ce52c93",
@@ -136,8 +135,6 @@ VueAMap.initAMapApiLoader({
   v: "1.4.4",
   uiVersion: '1.0.11'
 });
-
-
 
 
 // PrismJS

@@ -13,8 +13,9 @@
     <p class="mb-4"><a href="https://xkjyeah.github.io/vue-google-maps/" target="_blank" rel="nofollow"></a>
     </p>
 
-    <g-map-basic/>
     <vehicle-mileage/>
+    <g-map-basic/>
+
     <!--    <google-map-basic></google-map-basic>-->
     <!--    <google-map-info-window></google-map-info-window>-->
     <!--    <google-map-street-view></google-map-street-view>-->

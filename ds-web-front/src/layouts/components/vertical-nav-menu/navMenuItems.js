@@ -40,13 +40,14 @@ export default [
         name: "Analytics",
         slug: "dashboard-analytics",
         i18n: "Analytics",
-      },
-      {
-        url: '/dashboard/ecommerce',
-        name: "eCommerce",
-        slug: "dashboard-ecommerce",
-        i18n: "eCommerce",
-      },
+      }
+      // ,
+      // {
+      //   url: '/dashboard/ecommerce',
+      //   name: "eCommerce",
+      //   slug: "dashboard-ecommerce",
+      //   i18n: "eCommerce",
+      // },
     ]
   },
   // {
@@ -786,6 +787,13 @@ export default [
         slug: "extra-component-maps-google-map",
         i18n: 'VehicleMonitor',
       },
+      {
+        url: "/ui-elements/ag-grid-table",
+        name: "agGrid Table",
+        slug: "ag-grid-table",
+        icon: "GridIcon",
+        i18n: "agGridTable",
+      }
     ]
   },
   {
