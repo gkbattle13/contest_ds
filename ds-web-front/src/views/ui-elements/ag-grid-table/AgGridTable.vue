@@ -94,7 +94,7 @@ export default {
       total: 0,
       defaultColDef: {
         sortable: true,
-        editable: true,
+        editable: false,
         resizable: true,
         suppressMenu: true
       },
@@ -109,7 +109,7 @@ export default {
           headerCheckboxSelection: true,
         },
         {
-          headerName: '里程',
+          headerName: '里程(m)',
           field: 'mileage',
           filter: true,
           width: 175,
@@ -195,7 +195,7 @@ export default {
     }
   },
   methods: {
-    updateSearchQuery(val) {
+    updateSearchQuery() {
       const me = this;
       console.log("updateSearchQuery:%s", me.searchQuery);
       me.loadData();

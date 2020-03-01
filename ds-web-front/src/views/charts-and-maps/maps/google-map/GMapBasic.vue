@@ -145,10 +145,9 @@ export default {
       await me.$http.post("/api/plat/auth/login", auth).then(res => {
         console.log(res);
       }).catch(err => {
-        console.log(err);
         this.$vs.notify({
           title: "",
-          text: error,
+          text: err,
           color: 'danger',
           position: 'top-left'
         });
@@ -216,7 +215,6 @@ export default {
       });
       newNav.start();
       me.nav = newNav;
-
     },
     add() {
       let o = amapManager.getMap();
@@ -227,6 +225,7 @@ export default {
     },
     track() {
       const me = this;
+      me.$vs.loading();
       // 清除之前的轨迹
       me.clear();
       // eslint-disable-next-line no-unused-vars
@@ -262,7 +261,6 @@ export default {
             }
             return pathData.name + '，点数量' + pathData.path.length;
           },
-
 
           renderOptions: {
             pathLineStyle: {
@@ -338,6 +336,7 @@ export default {
 
               me.nav = nav;
               nav.start();
+              me.$vs.loading.close();
             }).catch(err => {
               console.log(err);
               me.$vs.notify({
