@@ -11,7 +11,7 @@
               "reader": {
                   "name": "txtfilereader",
                   "parameter": {
-                      "path": ["~/ds-etl/data/sample.txt"],
+                      "path": ["/root/ds-etl/data/sample.txt"],
                       "encoding": "UTF-8",
                       "column": [
                           {
