@@ -9,4 +9,12 @@ dependencies {
 //    compile "org.springframework.boot:spring-boot-starter-log4j2:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-websocket:$springBootVersion"
+    //swagger集成
+    compile ("io.springfox:springfox-swagger2:${swaggerVersion}") {
+        exclude group: 'io.swagger', module: 'swagger-annotations'
+        exclude group: 'io.swagger', module: 'swagger-models'
+    }
+    compile ("io.springfox:springfox-swagger-ui:${swaggerVersion}")
+    compile ("io.swagger:swagger-annotations:${swaggerAnnotationsVersion}")
+    compile ("io.swagger:swagger-models:${swaggerModelsVersion}")
 }

@@ -1,0 +1,56 @@
+{
+  "setting": {},
+  "job": {
+      "setting": {
+          "speed": {
+              "channel": 2
+          }
+      },
+      "content": [
+          {
+              "reader": {
+                  "name": "txtfilereader",
+                  "parameter": {
+                      "path": ["/root/ds-etl/data/mileage.txt"],
+                      "encoding": "UTF-8",
+                      "column": [
+                          {
+                              "index": 0,
+                              "type": "string"
+                          },
+                          {
+                              "index": 1,
+                              "type": "long"
+                          }
+                      ],
+                      "fieldDelimiter": "\t"
+                  }
+              },
+              "writer": {
+                "name": "elasticsearchwriter",
+                "parameter": {
+                  "endpoint": "http://127.0.0.1:9200",
+                  "accessId": "xxx",
+                  "accessKey": "xxx",
+                  "index": "mileage_v1",
+                  "type": "mileage",
+                  "cleanup": true,
+                  "batchSize": 1000,
+                  "discovery": false,
+                  "settings": {
+                    "index": {
+                        "number_of_shards": "5",
+                        "number_of_replicas": "1"
+                    }
+                  },
+                  "splitter": ",",
+                  "column": [
+                    {"name": "deviceCode", "type": "keyword"},
+                    {"name": "mileage", "type": "long"}
+                  ]
+                }
+              }
+          }
+      ]
+  }
+}

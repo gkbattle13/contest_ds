@@ -16,4 +16,13 @@ public class Constant {
      * Sample Type
      */
     public static final String SAMPLE_TYPE = "sample";
+
+    /**
+     * Mileage 索引
+     */
+    public static final String MILEAGE_INDEX = "mileage_v1";
+    /**
+     * Mileage Type
+     */
+    public static final String MILEAGE_TYPE = "mileage";
 }

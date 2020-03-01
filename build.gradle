@@ -12,6 +12,9 @@ subprojects {
 	ext {
 		lombokVersion = "1.18.8"
 		springBootVersion = "2.2.5.RELEASE"
+		swaggerVersion='2.9.2'
+		swaggerAnnotationsVersion='1.5.21'
+		swaggerModelsVersion='1.5.21'
 	}
 
 	repositories {
