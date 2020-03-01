@@ -84,8 +84,17 @@ public class SampleService {
 
             // 最大误差距离
             double dMax = 20d;
+
             // 压缩经纬度
-            return TrajectoryCompressionUtil.TrajectoryOptimize(points, dMax);
+            points = TrajectoryCompressionUtil.TrajectoryOptimize(points, dMax);
+
+            // GPS坐标转换
+            StopWatch watch = new StopWatch();
+            watch.start();
+            points.forEach(GPSUtil::gps84_To_Gcj02_03);
+            watch.stop();
+            logger.info("StopWatch GPS坐标转换完成，转换数据量为：{}， 耗时：{} s",points.size(), watch.getTotalTimeSeconds());
+            return points;
         }
 
         return Collections.emptyList();
