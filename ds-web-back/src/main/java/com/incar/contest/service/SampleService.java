@@ -5,11 +5,13 @@ import com.incar.contest.bean.Point;
 import com.incar.contest.bean.Sample;
 import com.incar.contest.elastic.Elasticsearch;
 import com.incar.contest.share.Constant;
+import com.incar.contest.util.GPSUtil;
 import com.incar.contest.util.TrajectoryCompressionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StopWatch;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -93,7 +95,7 @@ public class SampleService {
             watch.start();
             points.forEach(GPSUtil::gps84_To_Gcj02_03);
             watch.stop();
-            logger.info("StopWatch GPS坐标转换完成，转换数据量为：{}， 耗时：{} s",points.size(), watch.getTotalTimeSeconds());
+//            logger.info("StopWatch GPS坐标转换完成，转换数据量为：{}， 耗时：{} s",points.size(), watch.getTotalTimeSeconds());
             return points;
         }
 
