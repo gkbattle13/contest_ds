@@ -21,6 +21,9 @@ application-*.yml
 Configuration-sample.properties
 temp/
 **/rebel.xml
+gradle/
+gradlew
+gradlew.bat
 
 
 

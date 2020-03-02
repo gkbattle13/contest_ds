@@ -27,29 +27,29 @@ export default [
   //   icon: "MailIcon",
   //   i18n: "Email",
   // },
-  {
-    url: null,
-    name: "Dashboard",
-    tag: "2",
-    tagColor: "warning",
-    icon: "HomeIcon",
-    i18n: "Dashboard",
-    submenu: [
-      {
-        url: '/dashboard/analytics',
-        name: "Analytics",
-        slug: "dashboard-analytics",
-        i18n: "Analytics",
-      }
-      // ,
-      // {
-      //   url: '/dashboard/ecommerce',
-      //   name: "eCommerce",
-      //   slug: "dashboard-ecommerce",
-      //   i18n: "eCommerce",
-      // },
-    ]
-  },
+  // {
+  //   url: null,
+  //   name: "Dashboard",
+  //   tag: "2",
+  //   tagColor: "warning",
+  //   icon: "HomeIcon",
+  //   i18n: "Dashboard",
+  //   submenu: [
+  //     {
+  //       url: '/dashboard/analytics',
+  //       name: "Analytics",
+  //       slug: "dashboard-analytics",
+  //       i18n: "Analytics",
+  //     }
+  //     ,
+  //     {
+  //       url: '/dashboard/ecommerce',
+  //       name: "eCommerce",
+  //       slug: "dashboard-ecommerce",
+  //       i18n: "eCommerce",
+  //     },
+  //   ]
+  // },
   // {
   //   header: "Apps",
   //   icon: "PackageIcon",

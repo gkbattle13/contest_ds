@@ -60,6 +60,7 @@ import 'flatpickr/dist/flatpickr.css';
 // import 'flatpickr/dist/themes/material_blue.css';
 import {Mandarin as China} from 'flatpickr/dist/l10n/zh.js';
 import * as moment from 'moment';
+// import {loadMP} from '../../../../plugins/asyncLoadAmap.js'
 
 let amapManager = new VueAMap.AMapManager();
 
@@ -181,6 +182,8 @@ export default {
       const me = this;
       if (me.path != null) {
         me.path.setData([]);
+      }
+      if (me.nav != null) {
         me.nav.destroy();
       }
     },
@@ -225,13 +228,18 @@ export default {
     },
     track() {
       const me = this;
-      me.$vs.loading();
+
       // 清除之前的轨迹
       me.clear();
       // eslint-disable-next-line no-unused-vars
       AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function (PathSimplifier, $) {
         if (!PathSimplifier.supportCanvas) {
-          alert('当前环境不支持 Canvas！');
+          me.$vs.notify({
+            title: "",
+            text: "当前环境不支持 Canvas!",
+            color: 'danger',
+            position: 'top-right'
+          });
           return;
         }
 
@@ -290,6 +298,7 @@ export default {
         // window.pathSimplifierIns = pathSimplifierIns; "https://a.amap.com/amap-ui/static/data/big-routes.json"
         me.$validator.validateAll().then(result => {
           if (result) {
+            me.$vs.loading();
             let dataUrl = "/api/contest/sample/queryTrack";
             let param = {
               "deviceCode": me.vin,
@@ -338,13 +347,13 @@ export default {
               nav.start();
               me.$vs.loading.close();
             }).catch(err => {
-              console.log(err);
               me.$vs.notify({
                 title: "",
                 text: err,
                 color: 'danger',
                 position: 'top-right'
               });
+              me.$vs.loading.close();
             })
           } else {
             // form have errors

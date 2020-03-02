@@ -6,32 +6,30 @@
         <span class="text-danger text-sm" v-show="errors.has('vin')">{{ errors.first('vin') }}</span>
       </div>
       <div class="vx-col mb-2">
-        <flat-pickr :config="configs" v-model="sdatetime" placeholder="Start Time" name="sdatetime" v-validate="'required'"/>
+        <flat-pickr :config="configs" v-model="sdatetime" placeholder="Start Time" name="sdatetime"
+                    v-validate="'required'"/>
         <div>
-        <span class="text-danger text-sm" v-show="errors.has('sdatetime')">{{ errors.first('sdatetime') }}</span></div>
+          <span class="text-danger text-sm" v-show="errors.has('sdatetime')">{{ errors.first('sdatetime') }}</span>
+        </div>
       </div>
       <vs-button radius color="primary" type="border" icon="search" @click="mileageCount()"/>
     </div>
     <div class="vx-row">
       <div class="vx-col w-full sm:w-1/2 md:w-1/2 lg:w-1/4 xl:w-1/4 mb-base">
-        <statistics-card-line icon="TruckIcon" statisticTitle="单车行驶总里程" :statistic="mileage"
+        <statistics-card-line icon="TruckIcon" statisticTitle="单车行驶总里程(m)" :statistic="mileage"
                               type='area'/>
       </div>
       <div class="vx-col w-full sm:w-1/2 md:w-1/2 lg:w-1/4 xl:w-1/4 mb-base">
-        <statistics-card-line icon="TruckIcon" statisticTitle="所有车辆行驶总里程" :statistic="totalMileage"
+        <statistics-card-line icon="TruckIcon" statisticTitle="所有车辆行驶总里程(m)" :statistic="totalMileage"
                               type='area'/>
       </div>
       <div class="vx-col w-full sm:w-1/2 md:w-1/2 lg:w-1/4 xl:w-1/4 mb-base">
-        <statistics-card-line icon="DatabaseIcon" statisticTitle="数据总行数" :statistic="dataTotal"
+        <statistics-card-line icon="DatabaseIcon" statisticTitle="数据总行数(行)" :statistic="dataTotal"
                               type='area'/>
 
       </div>
     </div>
-
-
   </vx-card>
-
-
 </template>
 
 <script>
