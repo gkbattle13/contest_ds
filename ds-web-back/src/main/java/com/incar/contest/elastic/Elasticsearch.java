@@ -304,14 +304,10 @@ public class Elasticsearch {
             SearchResponse srNum = searchNum.get();//得到查询结果
             int total = (int) srNum.getHits().getTotalHits();
 
-            if (total < offset) {
-                offset = total;
-            }
-
             SearchRequestBuilder search = esClient.prepareSearch(index)
                     .setTypes(type).setQuery(qb)
-                    .setFrom(offset)
-                    .setSize(pageSize);
+                    .setFrom(0)
+                    .setSize(total);
             SearchResponse sr = search.get();//得到查询结果
             for(SearchHit hits:sr.getHits()){
                 String json = JSON.toJSONString(hits.getSource()) ;
