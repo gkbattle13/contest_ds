@@ -165,7 +165,7 @@ public class TrajectoryCompressionUtil {
             //若当前最大距离大于最大距离误差
             if(maxDist >= dMax){
                 Point point = points.get(cur_pt);
-                if (point.getLatitude() > 0 && point.getLongitude() > 0) {
+                if (!GPSUtil.outOfChina(point.getLatitude(), point.getLongitude())) {
                     pointsFilter.add(point);
                 }
                 //将当前点加入到过滤数组中
