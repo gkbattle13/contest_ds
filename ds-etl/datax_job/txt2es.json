@@ -82,7 +82,7 @@
                     {"name": "longitude", "type": "text"},
                     {"name": "latitude", "type": "text"},
                     {"name": "angle", "type": "long"},
-                    {"name": "collectTime", "type": "date", "format": "yyyy-MM-dd"}
+                    {"name": "collectTime", "type": "date", "format": "yyyy-MM-dd HH:mm:ss"}
                   ]
                 }
               }
