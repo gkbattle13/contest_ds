@@ -164,7 +164,10 @@ public class TrajectoryCompressionUtil {
             }
             //若当前最大距离大于最大距离误差
             if(maxDist >= dMax){
-                pointsFilter.add(points.get(cur_pt));
+                Point point = points.get(cur_pt);
+                if (point.getLatitude() > 0 && point.getLongitude() > 0) {
+                    pointsFilter.add(point);
+                }
                 //将当前点加入到过滤数组中
                 //将原来的线段以当前点为中心拆成两段，分别进行递归处理
                 TraCompress(points, pointsFilter, start, cur_pt, dMax);
