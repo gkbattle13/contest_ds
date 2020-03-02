@@ -108,9 +108,11 @@ public class SampleService {
             List<Point> pointFilter = new ArrayList<>();
             if (points.size() > 1) {
                 pointFilter.add(points.get(0));
+                int index = 0;
                 for (int i = 1; i < points.size(); i++) {
-                    if (GPSUtil.getDistance(points.get(i - 1).getLatitude(), points.get(i - 1).getLongitude(),
+                    if (GPSUtil.getDistance(points.get(index).getLatitude(), points.get(index).getLongitude(),
                             points.get(i).getLatitude(), points.get(i).getLongitude()) < 5) {
+                        index = i;
                         pointFilter.add(points.get(i));
                     }
                 }
