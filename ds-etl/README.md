@@ -14,7 +14,10 @@
 ```bash
 # su - root
 sh> cd ~/datax/bin
+# origin
 sh> python ./datax.py ~/ds-etl/txt2es.json
+# millage
+sh> python ./datax.py ~/ds-etl/txt2es_millage.json
 ```
 
 ## 命令执行结果示例
