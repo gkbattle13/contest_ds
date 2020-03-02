@@ -165,7 +165,7 @@ public class TrajectoryCompressionUtil {
             //若当前最大距离大于最大距离误差
             if(maxDist >= dMax){
                 Point point = points.get(cur_pt);
-                if (maxDist > 50000) {
+                if (point.getLatitude() > 0 && point.getLongitude() > 0) {
                     pointsFilter.add(point);
                 }
                 //将当前点加入到过滤数组中
