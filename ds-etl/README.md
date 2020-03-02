@@ -14,7 +14,10 @@
 ```bash
 # su - root
 sh> cd ~/datax/bin
+# origin
 sh> python ./datax.py ~/ds-etl/txt2es.json
+# millage
+sh> python ./datax.py ~/ds-etl/txt2es_millage.json
 ```
 
 ## 命令执行结果示例
@@ -30,4 +33,17 @@ sh> python ./datax.py ~/ds-etl/txt2es.json
 记录写入速度                    :          18181rec/s
 读出记录总数                    :            12000000
 读写失败总数                    :                   0
+```
+
+```bash
+2020-03-02 14:13:09.988 [job-0] INFO  JobContainer - PerfTrace not enable!
+2020-03-02 14:13:09.988 [job-0] INFO  StandAloneJobContainerCommunicator - Total 151438501 records, 9824693860 bytes | Speed 1.04MB/s, 16822 records/s | Error 3 records, 78 bytes |  All Task WaitWriterTime 8,301.127s |  All Task WaitReaderTime 336.398s | Percentage 100.00%
+2020-03-02 14:13:09.990 [job-0] INFO  JobContainer - 
+任务启动时刻                    : 2020-03-02 11:43:06
+任务结束时刻                    : 2020-03-02 14:13:09
+任务总计耗时                    :               9003s
+任务平均流量                    :            1.04MB/s
+记录写入速度                    :          16822rec/s
+读出记录总数                    :           151438501
+读写失败总数                    :                   3
 ```
