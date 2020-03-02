@@ -103,7 +103,19 @@ public class SampleService {
             points.forEach(GPSUtil::gps84_To_Gcj02_03);
             watch.stop();
             log.info("StopWatch GPS坐标转换完成，转换数据量为：{}， 耗时：{} s",points.size(), watch.getTotalTimeSeconds());
-            return points;
+
+            // 过滤掉两个点的距离大于5KM的数据
+            List<Point> pointFilter = new ArrayList<>();
+            if (points.size() > 1) {
+                pointFilter.add(points.get(0));
+                for (int i = 1; i < points.size(); i++) {
+                    if (GPSUtil.getDistance(points.get(i - 1).getLatitude(), points.get(i - 1).getLongitude(),
+                            points.get(i).getLatitude(), points.get(i).getLongitude()) < 5) {
+                        pointFilter.add(points.get(i));
+                    }
+                }
+            }
+            return pointFilter;
         }
 
         return Collections.emptyList();
