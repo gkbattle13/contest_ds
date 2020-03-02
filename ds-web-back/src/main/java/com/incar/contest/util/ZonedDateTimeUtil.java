@@ -68,7 +68,7 @@ public class ZonedDateTimeUtil {
         ZoneId defaultZoneId = ZoneId.systemDefault();
         Instant instant = date.toInstant();
         ZonedDateTime zonedDateTime = instant.atZone(defaultZoneId);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss") ;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd") ;
         return zonedDateTime.format(formatter);
     }
 
